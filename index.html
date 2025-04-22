@@ -16,6 +16,86 @@
       line-height: 1.6;
     }
 
+    /* ======= LOGIN CONTAINER ======= */
+    #login-container {
+      max-width: 400px;
+      margin: 100px auto;
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+
+    #login-container:hover {
+      transform: translateY(-4px);
+    }
+
+    #login-container h2 {
+      color: #0a3d62;
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      background: linear-gradient(to right, #0a3d62, #3b82f6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    #login-container label {
+      font-weight: 600;
+      display: block;
+      margin-bottom: 8px;
+      font-size: 16px;
+      color: #0a3d62;
+      text-align: left;
+    }
+
+    #login-container input {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 10px;
+      border: 1px solid #d1d9e6;
+      font-size: 15px;
+      background-color: #f8fafc;
+      box-sizing: border-box;
+      margin-bottom: 16px;
+      transition: all 0.3s ease;
+    }
+
+    #login-container input:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+      background-color: #ffffff;
+      outline: none;
+    }
+
+    #login-container button {
+      background: linear-gradient(to right, #0a3d62, #3b82f6);
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.3s ease;
+    }
+
+    #login-container button:hover {
+      background: linear-gradient(to right, #083152, #2563eb);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(59, 130, 246, 0.3);
+    }
+
+    #login-error {
+      color: #dc2626;
+      font-size: 14px;
+      margin-top: 10px;
+      display: none;
+    }
+
     /* ======= TÍTULO ======= */
     .header-container {
       display: flex;
@@ -59,6 +139,7 @@
       border-radius: 16px;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
       transition: transform 0.3s ease;
+      display: none; /* Hidden until login */
     }
 
     .container:hover {
@@ -230,25 +311,14 @@
       height: 200px;
     }
 
-    /* ======= LOGO CORAÇÃO ======= */
-    .logo-coracao {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      width: 150px;
-      height: auto;
-      z-index: 1000;
-      filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.1));
-      transition: transform 0.3s ease;
-    }
-
-    .logo-coracao:hover {
-      transform: rotate(10deg);
-    }
-
     /* ======= RESPONSIVO ======= */
     @media (max-width: 768px) {
       body {
+        padding: 20px;
+      }
+
+      #login-container {
+        margin: 50px auto;
         padding: 20px;
       }
 
@@ -281,12 +351,6 @@
         font-size: 15px;
         padding: 14px;
       }
-
-      .logo-coracao {
-        width: 100px;
-        top: 10px;
-        right: 10px;
-      }
     }
 
     /* ======= ESTILOS PARA IMPRESSÃO ======= */
@@ -296,10 +360,15 @@
         padding: 0;
       }
 
+      #login-container {
+        display: none !important;
+      }
+
       .container {
         box-shadow: none;
         padding: 20px;
         margin: 0;
+        display: block !important;
       }
 
       .logo-coracao,
@@ -468,8 +537,18 @@
   </style>
 </head>
 <body>
-  <img src="img/coracao.gif" alt="Logo do coração" class="logo-coracao">
+  <!-- Login Screen -->
+  <div id="login-container">
+    <h2>Login - SESI Saúde</h2>
+    <label for="username">Usuário:</label>
+    <input type="text" id="username" placeholder="Digite seu usuário" />
+    <label for="password">Senha:</label>
+    <input type="password" id="password" placeholder="Digite sua senha" />
+    <button onclick="handleLogin()">Entrar</button>
+    <p id="login-error">Usuário ou senha incorretos.</p>
+  </div>
 
+  <!-- Scheduling Form (Hidden Initially) -->
   <div class="container">
     <div class="header-container">
       <img src="img/sesi.jpg" alt="Logo do SESI" class="header-logo">
@@ -582,7 +661,35 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <script>
-    // Função para carregar os agendamentos salvos no localStorage ao carregar a página
+    // Hardcoded credentials for demonstration (replace with backend authentication in production)
+    const validCredentials = {
+      username: "admin",
+      password: "sesi123"
+    };
+
+    // Handle login
+    function handleLogin() {
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+      const errorMessage = document.getElementById("login-error");
+
+      if (username === validCredentials.username && password === validCredentials.password) {
+        document.getElementById("login-container").style.display = "none";
+        document.querySelector(".container").style.display = "block";
+        errorMessage.style.display = "none";
+      } else {
+        errorMessage.style.display = "block";
+      }
+    }
+
+    // Allow Enter key to trigger login
+    document.getElementById("password").addEventListener("keypress", function(event) {
+      if (event.key === "Enter") {
+        handleLogin();
+      }
+    });
+
+    // Existing JavaScript (unchanged)
     window.onload = function () {
       const savedAgendamentos = localStorage.getItem("listaAgendamentos");
       if (savedAgendamentos) {
@@ -846,7 +953,6 @@
     }
 
     function enviarAgendamento() {
-      // Limpa todos os campos de entrada
       document.getElementById("tipo-identificacao").value = "";
       document.getElementById("cnpj").value = "";
       document.getElementById("cei").value = "";
@@ -865,7 +971,6 @@
       document.getElementById("contato").value = "";
       document.getElementById("tipo-atendimento").value = "";
 
-      // Oculta seções dinâmicas e limpa conteúdos
       document.getElementById("campo-cnpj").style.display = "none";
       document.getElementById("campo-cei").style.display = "none";
       document.getElementById("empresa-info").style.display = "none";
@@ -878,7 +983,6 @@
       document.getElementById("lista-agendamentos").innerHTML = "";
       document.getElementById("contato").style.display = "none";
 
-      // Limpa o localStorage
       localStorage.removeItem("listaAgendamentos");
 
       alert("Agendamento enviado com sucesso!\nAguardamos o seu Colaborador.");
@@ -889,7 +993,6 @@
       const listaAgendamentos = document.getElementById("lista-agendamentos");
       const empresaInfo = document.getElementById("empresa-info");
 
-      // Verifica se há conteúdo para imprimir
       const resumoContent = resumo.style.display === "block" ? resumo.innerHTML : "";
       const agendamentosContent = Array.from(listaAgendamentos.children)
         .filter(child => child.style.display !== "none")
@@ -901,7 +1004,6 @@
         return;
       }
 
-      // Chama a janela de impressão padrão do navegador
       window.print();
     }
   </script>
